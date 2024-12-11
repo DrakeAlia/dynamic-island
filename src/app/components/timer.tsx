@@ -2,18 +2,23 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 export function Timer() {
+  // State to track if timer is paused
   const [isPaused, setIsPaused] = useState(false);
 
   return (
+    // Main container for timer with specific dimensions and padding
     <div className="flex w-[284px] items-center gap-2 py-3 pl-3.5 pr-5">
+      {/* Pause/Play button with animation */}
       <motion.button
         aria-label="Pause timer"
         onClick={() => setIsPaused((p) => !p)}
-        whileTap={{ scale: 0.9 }}
+        whileTap={{ scale: 0.9 }} // Animation for button press
         className="flex h-10 w-10 items-center justify-center rounded-full bg-[#5A3C07] transition-colors hover:bg-[#694608]"
       >
+        {/* Animated icon transition between play and pause */}
         <AnimatePresence initial={false} mode="wait">
           {isPaused ? (
+            // Play icon SVG with enter/exit animations
             <motion.svg
               key="play"
               initial={{ opacity: 0, scale: 0.5, filter: "blur(4px)" }}
@@ -28,6 +33,7 @@ export function Timer() {
               <path d="M0.9375 13.2422C1.25 13.2422 1.51562 13.1172 1.82812 12.9375L10.9375 7.67188C11.5859 7.28906 11.8125 7.03906 11.8125 6.625C11.8125 6.21094 11.5859 5.96094 10.9375 5.58594L1.82812 0.3125C1.51562 0.132812 1.25 0.015625 0.9375 0.015625C0.359375 0.015625 0 0.453125 0 1.13281V12.1172C0 12.7969 0.359375 13.2422 0.9375 13.2422Z" />
             </motion.svg>
           ) : (
+            // Pause icon SVG with enter/exit animations
             <motion.svg
               key="pause"
               initial={{ opacity: 0, scale: 0.5, filter: "blur(4px)" }}
@@ -44,6 +50,8 @@ export function Timer() {
           )}
         </AnimatePresence>
       </motion.button>
+
+      {/* Exit button */}
       <button
         aria-label="Exit"
         className="flex h-10 w-10 items-center justify-center rounded-full bg-[#3C3D3C] text-white transition-colors hover:bg-[#4A4B4A]"
@@ -63,6 +71,8 @@ export function Timer() {
           />
         </svg>
       </button>
+
+      {/* Timer text and counter */}
       <div className="ml-auto flex items-baseline gap-1.5 pr-0.5 text-[#F7A815]">
         <span className="text-sm font-medium leading-none text-inherit">
           Timer
@@ -73,36 +83,44 @@ export function Timer() {
   );
 }
 
+// Counter component for displaying and animating timer numbers
 function Counter({ paused }: { paused?: boolean }) {
+  // State to track countdown time
   const [count, setCount] = useState(60);
 
+  // Effect to handle countdown timer
   useEffect(() => {
-    if (paused) return;
+    if (paused) return; // Don't countdown if paused
 
     const id = setInterval(() => {
       setCount((c) => {
         if (c === 0) {
-          return 60;
+          return 60; // Reset to 60 when reaching 0
         }
-        return c - 1;
+        return c - 1; // Decrement counter
       });
     }, 1000);
 
+    // Cleanup interval on unmount or pause state change
     return () => {
       clearInterval(id);
     };
   }, [paused]);
 
+  // Convert number to padded string array for animation
   const countArray = count.toString().padStart(2, "0").split("");
 
   return (
+    // Container for animated numbers
     <div className="relative w-[64px] overflow-hidden whitespace-nowrap text-3xl font-light">
       0:
       <AnimatePresence initial={false} mode="popLayout">
+        {/* Animate each digit individually */}
         {countArray.map((n, i) => (
           <motion.div
             className="inline-block tabular-nums"
             key={n + i}
+            // Slide-up animation for number changes
             initial={{ y: "12px", filter: "blur(2px)", opacity: 0 }}
             animate={{ y: "0", filter: "blur(0px)", opacity: 1 }}
             exit={{ y: "-12px", filter: "blur(2px)", opacity: 0 }}

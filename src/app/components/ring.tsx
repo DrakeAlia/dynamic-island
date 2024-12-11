@@ -2,28 +2,34 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function Ring() {
+  // State to toggle between ring and silent modes
   const [isSilent, setIsSilent] = useState(false);
+  // State to handle initial animation timing
   const [firstTime, setFirstTime] = useState(true);
 
+  // Effect to handle automatic toggling between ring and silent modes
   useEffect(() => {
     const id = setTimeout(
       () => {
         setFirstTime(false);
-        setIsSilent((s) => !s);
+        setIsSilent((s) => !s); // Toggle silent mode
       },
-      firstTime ? 1000 : 2000
+      firstTime ? 1000 : 2000 // Different timing for first animation
     );
 
+    // Cleanup timeout on unmount or state change
     return () => clearTimeout(id);
   }, [isSilent, firstTime]);
 
   return (
+    // Main container with dynamic width animation
     <motion.div
-      initial={false}
+      initial={false} // Disable initial animation
       className="relative flex h-7 items-center justify-between px-2.5"
-      animate={{ width: isSilent ? 148 : 128 }}
+      animate={{ width: isSilent ? 148 : 128 }} // Expand/contract based on mode
       transition={{ type: "spring", bounce: 0.5 }}
     >
+      {/* Animated red background for silent mode */}
       <AnimatePresence>
         {isSilent ? (
           <motion.div
@@ -39,16 +45,19 @@ export function Ring() {
           />
         ) : null}
       </AnimatePresence>
+
+      {/* Bell icon container with shake animation */}
       <motion.div
         initial={false}
         className="relative h-[12.75px] w-[11.25px]"
         animate={{
           rotate: isSilent
-            ? [0, -15, 5, -2, 0]
-            : [0, 20, -15, 12.5, -10, 10, -7.5, 7.5, -5, 5, 0],
-          x: isSilent ? 9 : 0,
+            ? [0, -15, 5, -2, 0] // Silent mode rotation animation
+            : [0, 20, -15, 12.5, -10, 10, -7.5, 7.5, -5, 5, 0], // Ring mode rotation animation
+          x: isSilent ? 9 : 0, // Move bell when silent
         }}
       >
+        {/* Bell SVG icon */}
         <svg
           className="inset-0"
           width="11.25"
@@ -62,10 +71,12 @@ export function Ring() {
             fill="white"
           />
         </svg>
+
+        {/* Strike-through line animation for silent mode */}
         <div className="absolute inset-0">
           <div className="h-5 -translate-y-[5px] translate-x-[5.25px] rotate-[-40deg] overflow-hidden">
             <motion.div
-              animate={{ height: isSilent ? 16 : 0 }}
+              animate={{ height: isSilent ? 16 : 0 }} // Show/hide strike-through
               transition={{
                 ease: "easeInOut",
                 duration: isSilent ? 0.125 : 0.05,
@@ -73,6 +84,7 @@ export function Ring() {
               }}
               className="w-fit rounded-full"
             >
+              {/* Strike-through line with white center */}
               <div className="flex h-full w-[3px] items-center justify-center rounded-full bg-[#FD4F30]">
                 <div className="h-full w-[0.75px] rounded-full bg-white" />
               </div>
@@ -80,6 +92,8 @@ export function Ring() {
           </div>
         </div>
       </motion.div>
+
+      {/* Text indicator that changes based on mode */}
       <div className="ml-auto flex items-center">
         {isSilent ? (
           <span className="text-xs font-medium text-[#FD4F30]">Silent</span>
