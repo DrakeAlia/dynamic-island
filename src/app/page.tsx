@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Ring } from "./components/ring";
+// import { Timer } from "./components/timer";
 import { motion } from "framer-motion";
 
 export default function DynamicIslandStarter() {
