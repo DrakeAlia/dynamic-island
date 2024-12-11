@@ -17,7 +17,7 @@ export default function DynamicIslandStarter() {
   }, [view]);
 
   return (
-    <div>
+    <div className="min-h-screen flex flex-col items-center justify-center">
       <div className="flex h-[160px] justify-center">
         <motion.div
           layout
